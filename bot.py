@@ -75,6 +75,19 @@ async def on_message(message):
             break
     
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Invalid command used.")
 
+@bot.command()
+async def now_playing(ctx, *, user: discord.Member = None):
+    user = user or ctx.author
+    for activity in user.activities:
+        if isinstance(activity, discord.Spotify):
+            await ctx.send(f'{user} is listening to {activity.title} by {activity.artist} on Spotify.')
+            break
+    else:
+        await ctx.send(f'{user} is not listening to Spotify.')
 
 bot.run(TOKEN)
